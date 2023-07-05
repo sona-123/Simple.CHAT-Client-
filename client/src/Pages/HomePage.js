@@ -9,8 +9,8 @@ import {
   TabPanels,
   Tab,
 } from "@chakra-ui/react";
-import Login from "../Components/Authentication/Login";
-import Signup from "../Components/Authentication/Signup";
+import Login from "../components/Authentication/Login";
+import Signup from "../components/Authentication/Signup";
 import { useNavigate } from "react-router-dom";
 
 const Homepage = () => {
@@ -25,8 +25,8 @@ const Homepage = () => {
   }, [navigate]);
 
   return (
-    <Container maxW="xl" centerContent>
-      <Box
+    <Container maxW="xl" centerContent paddingTop={"20px"}>
+      {/* <Box
         display="flex"
         justifyContent="center"
         p={3}
@@ -36,17 +36,17 @@ const Homepage = () => {
         borderRadius="lg"
         borderWidth="1px"
       >
-        <Text fontSize="4xl" fontFamily="QuickSand" color="black">
-          Simple.CHAT
+        <Text fontSize="4xl" fontFamily="QuickSand" color="white">
+          Ⓢⓘⓜⓟⓛⓔ.ⒸⒽⒶⓉ
         </Text>
-      </Box>
+      </Box> */}
       <Box
-        bg="black"
+        bg="white"
         w="100%"
         p={4}
         borderRadius="lg"
-       
-        borderWidth="1px"
+
+        // borderWidth="1px"
       >
         <Tabs variant="soft-rounded">
           <TabList>

@@ -1,88 +1,83 @@
-import React, { useState } from "react";
 import {
   Avatar,
   Button,
   IconButton,
+  Image,
   Modal,
   ModalBody,
-  ModalHeader,
+  ModalCloseButton,
+  ModalContent,
   ModalFooter,
+  ModalHeader,
   ModalOverlay,
-  Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
-
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    cursor: "pointer",
-    borderRadius: "100%",
-  },
-  modalHeader: {
-    fontSize: 40,
-    fontFamily: "QuickSand",
-    display: "flex",
-    justifyContent: "center",
-  },
-  modalBody: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-}));
+  Text,
+} from "@chakra-ui/react";
+import React from "react";
+import { useDisclosure } from "@chakra-ui/hooks";
 
 const ProfileModal = ({ user, children, size }) => {
-  const classes = useStyles();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
       {children ? (
-        <span onClick={handleOpen}>{children}</span>
+        <span onClick={onOpen}>{children}</span>
       ) : (
         <IconButton
           display={{ base: "flex" }}
-          onClick={handleOpen}
+          icon={
+            <Avatar
+              size={size}
+              cursor={"pointer"}
+              name={user.name}
+              src={user.pic}
+            />
+          }
+          onClick={onOpen}
           background="inherit"
-          className={classes.avatar}
-        >
-          <Avatar size={size} alt={user.name} src={user.pic} />
-        </IconButton>
+          borderRadius={"100%"}
+        />
       )}
 
-      <Modal open={isOpen} onClose={handleClose} center>
+      <Modal size={"lg"} isOpen={isOpen} onClose={onClose} isCentered  background={"blue"}>
         <ModalOverlay />
-        <ModalBody className={classes.modalBody}>
-          <Avatar
-            className={classes.avatar}
-            alt={user.name}
-            src={user.pic}
-          />
-          <Typography
-            variant="h4"
-            className={classes.modalHeader}
+        <ModalContent>
+          <ModalHeader
+            fontSize={"40"}
+            fontFamily="QuickSand"
+            display={"flex"}
+            justifyContent="center"
           >
             {user.name}
-          </Typography>
-          <Typography variant="subtitle1">
-            Email: {user.email}
-          </Typography>
-        </ModalBody>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody
+            display={"flex"}
+            flexDir="column"
+            alignItems={"center"}
+            justifyContent="space-between"
+          >
+            <Image
+              borderRadius={"full"}
+              boxSize="150px"
+              src={user.pic}
+              alt={user.name}
+              margin={5}
+            />
+            <Text
+              fontSize={{ base: "28px", md: "30px" }}
+              fontFamily={"QuickSand"}
+            >
+              Email: {user.email}
+            </Text>
+          </ModalBody>
 
-        <ModalFooter>
-          <Button color="primary" onClick={handleClose}>
-            Close
-          </Button>
-        </ModalFooter>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
     </>
   );

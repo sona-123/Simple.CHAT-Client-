@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { ViewIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -7,42 +7,25 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Spinner,
-  Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { View as ViewIcon } from "@material-ui/icons";
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import axios from "axios";
+import { API } from "../../API";
+import React, { useState } from "react";
 import { ChatState } from "../../Context/chatProvider";
 import UserBadgeItem from "../UserAvatar/UserBadgeItem";
 import UserListItem from "../UserAvatar/UserListItem";
 
-const useStyles = makeStyles((theme) => ({
-  modalHeader: {
-    fontSize: "35px",
-    fontFamily: "QuickSand",
-    display: "flex",
-    justifyContent: "center",
-  },
-  formControl: {
-    display: "flex",
-    marginBottom: theme.spacing(1),
-  },
-  addButton: {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-const UpdateGroupChatModal = ({
-  fetchAgain,
-  setFetchAgain,
-  fetchMessages,
-}) => {
-  const classes = useStyles();
-  const [isOpen, setIsOpen] = useState(false);
-  const [groupChatName, setGroupChatName] = useState("");
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [groupChatName, setGroupChatName] = useState();
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -50,12 +33,20 @@ const UpdateGroupChatModal = ({
 
   const { selectedChat, setSelectedChat, user } = ChatState();
 
+  const toast = useToast();
+
   const handleRemove = async (userToRemove) => {
     if (
       selectedChat.groupAdmin._id !== user._id &&
       userToRemove._id !== user._id
     ) {
-      console.log("Only Admins can remove someone!");
+      toast({
+        title: "Only Admins can remove someone!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
       return;
     }
 
@@ -68,7 +59,7 @@ const UpdateGroupChatModal = ({
       };
 
       const { data } = await axios.put(
-        "/api/chat/groupremove",
+        `${API}/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
           userId: userToRemove._id,
@@ -76,17 +67,20 @@ const UpdateGroupChatModal = ({
         config
       );
 
-      if (userToRemove._id === user._id) {
-        setSelectedChat();
-      } else {
-        setSelectedChat(data);
-      }
+      userToRemove._id === user._id ? setSelectedChat() : setSelectedChat(data);
       setLoading(false);
       setFetchAgain(!fetchAgain);
       fetchMessages();
     } catch (error) {
       setLoading(false);
-      console.log("Error Occurred!", error.message);
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
     }
   };
 
@@ -103,7 +97,7 @@ const UpdateGroupChatModal = ({
       };
 
       const { data } = await axios.put(
-        "/api/chat/rename",
+        `${API}/api/chat/rename`,
         {
           chatId: selectedChat._id,
           chatName: groupChatName,
@@ -116,7 +110,14 @@ const UpdateGroupChatModal = ({
       setRenameLoading(false);
     } catch (error) {
       setRenameLoading(false);
-      console.log("Error Occurred!", error.message);
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
     }
 
     setGroupChatName("");
@@ -138,18 +139,33 @@ const UpdateGroupChatModal = ({
         },
       };
 
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await axios.get(`${API}/api/user?search=${search}`, config);
       setLoading(false);
       setSearchResults(data);
     } catch (error) {
       setLoading(false);
-      console.log("Error Occurred!", error.message);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+      return;
     }
   };
 
   const handleAddUser = async (userToAdd) => {
     if (selectedChat.users.find((u) => u._id === userToAdd._id)) {
-      console.log("User Already in group!");
+      toast({
+        title: "User Already in group!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+
       return;
     }
 
@@ -162,7 +178,7 @@ const UpdateGroupChatModal = ({
       };
 
       const { data } = await axios.put(
-        "/api/chat/groupadd",
+        `${API}/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
           userId: userToAdd._id,
@@ -175,27 +191,39 @@ const UpdateGroupChatModal = ({
       setFetchAgain(!fetchAgain);
     } catch (error) {
       setLoading(false);
-      console.log("Error Occurred!", error.message);
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
     }
   };
 
   return (
     <>
       <IconButton
-        style={{ display: "flex" }}
-        onClick={() => setIsOpen(true)}
-      >
-        <ViewIcon />
-      </IconButton>
+        display={{ base: "flex" }}
+        icon={<ViewIcon />}
+        onClick={onOpen}
+      />
 
-      <Modal open={isOpen} onClose={() => setIsOpen(false)} centered>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <Box mx={3} my={2} maxWidth={400}>
-          <ModalHeader className={classes.modalHeader}>
+        <ModalContent>
+          <ModalHeader
+            fontSize={"35px"}
+            fontFamily="QuickSand"
+            display={"flex"}
+            justifyContent="center"
+          >
             {selectedChat.chatName}
           </ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
-            <Box width="100%" display="flex" flexWrap="wrap" paddingBottom={3}>
+            <Box w={"100%"} display="flex" flexWrap={"wrap"} pb={3}>
               {selectedChat.users.map((u) => (
                 <UserBadgeItem
                   key={u._id}
@@ -205,32 +233,34 @@ const UpdateGroupChatModal = ({
               ))}
             </Box>
 
-            {selectedChat.groupAdmin._id === user._id && (
+            {selectedChat.groupAdmin._id === user._id ? (
               <>
-                <FormControl className={classes.formControl}>
+                <FormControl display={"flex"}>
                   <Input
                     placeholder="Chat Name"
+                    mb={3}
                     value={groupChatName}
                     onChange={(e) => setGroupChatName(e.target.value)}
                   />
                   <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.addButton}
-                    disabled={!groupChatName}
+                    variant="solid"
+                    colorScheme={"teal"}
+                    ml={1}
+                    isLoading={renameLoading}
                     onClick={handleRename}
                   >
                     Update
                   </Button>
                 </FormControl>
-                <FormControl className={classes.formControl}>
+                <FormControl display={"flex"}>
                   <Input
-                    placeholder="Add User to Group"
+                    placeholder="Add User to group"
+                    mb={1}
                     onChange={(e) => handleSearch(e.target.value)}
                   />
                 </FormControl>
                 {loading ? (
-                  <Spinner size="large" />
+                  <Spinner size="lg" />
                 ) : (
                   searchResults?.map((user) => (
                     <UserListItem
@@ -241,16 +271,17 @@ const UpdateGroupChatModal = ({
                   ))
                 )}
               </>
+            ) : (
+              <></>
             )}
           </ModalBody>
-          <Button
-            color="secondary"
-            onClick={() => handleRemove(user)}
-            fullWidth
-          >
-            Leave Group
-          </Button>
-        </Box>
+
+          <ModalFooter>
+            <Button colorScheme="red" onClick={() => handleRemove(user)}>
+              Leave Group
+            </Button>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
     </>
   );

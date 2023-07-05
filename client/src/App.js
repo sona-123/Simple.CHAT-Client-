@@ -1,17 +1,18 @@
-import React from 'react'
-import { Alert } from '@mui/material'
-import Routers from "./Router"
-import ChatProvider from './main/chatProvider'
-export default function App() {
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import Homepage from "./Pages/HomePage";
+import Chatpage from "./Pages/ChatPage";
+
+function App() {
   return (
-    <React.StrictMode>
-       
-        <Routers/> 
+    <div className="App">
+      <Routes>
+      <Route path="/" exact element={<Homepage/>} />
+      <Route path="/chats" element={<Chatpage/>} />
+      </Routes>
       
-     
-     
-      
-      </React.StrictMode>
-    
-  )
+    </div>
+  );
 }
+
+export default App;

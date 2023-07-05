@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ChatState } from "../Context/chatProvider";
 import AddIcon from "@mui/icons-material/Add";
-import ChatLoading from "./chatloading";
+import ChatLoading from "./ChatLoading";
 import { getOtherUser } from "../config/ChatLogics";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { API } from "../API";

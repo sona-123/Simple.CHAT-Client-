@@ -213,7 +213,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages,name })
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent  style={{fontFamily:"Pacifico", fontSize:"20px"}}   >
           <ModalHeader
             fontSize={"35px"}
             fontFamily="QuickSand"

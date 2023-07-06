@@ -1,4 +1,4 @@
-import { CloseIcon } from "@chakra-ui/icons";
+import {  ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -22,6 +22,7 @@ import io from "socket.io-client";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
 import { API } from "../API";
+import { color } from "framer-motion";
 const ENDPOINT = API;
 var socket, selectedChatCompare, lastRoom;
 
@@ -191,12 +192,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           <Text
             fontSize={{ base: "28px", md: "30px" }}
             pb={3}
-            px={2}
+            px={3}
             w={"100%"}
-            fontFamily={"QuickSand"}
             display="flex"
+            bgColor={"#3E103F"}
+            color={"white"}
             justifyContent={{ base: "space-between" }}
             alignItems="center"
+            border={"2px solid white"}
           >
             <div style={{ display: "inherit" }}>
               {!selectedChat.isGroupChat ? (
@@ -207,7 +210,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                       size="md"
                     />
                   </Box>
-                  {getOtherUser(user, selectedChat.users).name}
+                  <span >{getOtherUser(user, selectedChat.users).name}</span>
+                  
                 </>
               ) : (
                 <>
@@ -225,10 +229,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             </div>
             <IconButton
               display={{ base: "flex", md: "none" }}
-              size="sm"
-              backgroundColor={"inherit"}
+              fontSize={"20px"}
+              color={"white"}
+              _hover={{ color:"black", bgColor:"white", border:"1px solid black" }}
+              backgroundColor={"#3E103F"}
               borderRadius="100%"
-              icon={<CloseIcon />}
+              icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat("")}
             />
           </Text>
@@ -238,12 +244,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             flexDir="column"
             justifyContent={"flex-end"}
             p={3}
-            style={{  backgroundImage: "url(" + "https://images.pexels.com/photos/6039245/pexels-photo-6039245.jpeg?auto=compress&cs=tinysrgb&h=450" + ")" }}
+            style={{  backgroundImage: "url(" + "https://images.pexels.com/photos/6039245/pexels-photo-6039245.jpeg?auto=compress&cs=tinysrgb&h=850" + ")" }}
             
             bg="#E8E8E8"
             w={"100%"}
             h={"100%"}
-            borderRadius="lg"
+            borderRadius="sm"
+            border={"2px solid white"}
             overflowY={"hidden"}
           >
             {loading ? (
@@ -286,10 +293,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 
               />
               <Button
-                rightIcon={<SendIcon style={{ fill: "white" }} />}
-                backgroundColor="#3E103F"
+                rightIcon={<SendIcon style={{ fill: "black" }} />}
+                backgroundColor="white"
                 color="white"
-                ml={1}
+                borderRadius={"100%"}
+                pt={"10px"}
+                paddingBottom={"10px"}
+              pl={"4px"}
+              pr={"6px"}
+                ml={2}
                 onClick={sendMessage}
               />
             </FormControl>
@@ -300,12 +312,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           display={"flex"}
           alignItems="center"
           justifyContent={"center"}
-          
+          style={{  backgroundImage: "url(" + "https://i.ibb.co/FXQQQDB/dool222.jpg" + ")" }}
           h="100%"
+          w="100%"
         >
-          <Text fontSize={"3xl"} pb={3} fontFamily="QuickSand">
-            Click on a User to start chatting
-          </Text>
+         
         </Box>
       )}
     </>

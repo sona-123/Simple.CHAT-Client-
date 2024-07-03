@@ -10,7 +10,7 @@
 
 <h2>🚀 Frontend Portion</h2>
 
-[https://github.com/gauravsahay007/CHAT_frontend](https://github.com/gauravsahay007/CHAT_frontend)
+[https://github.com/gauravsahay007/CHAT_frontend](https://github.com/gauravsahay007/Simple.CHAT-Server-)
 
 <h2>Project Screenshots:</h2>
 
